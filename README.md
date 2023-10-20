@@ -1,7 +1,7 @@
 # Discord VRChat Presence
  a vrchat osc and discord rpc server that match up, very scuffed
 
- ![alt text](https://github.com/aethefurry/discord-vrchat-presnce/blob/main/discord.png?raw=true)
+ ![alt text](https://github.com/aethefurry/discord-vrchat-presnce/blob/main/example/discord.png?raw=true)
 
 *pause detection only works on spotify*
 *Tested on windows 10 22H2 - Python 3.11*

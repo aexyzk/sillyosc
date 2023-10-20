@@ -10,13 +10,12 @@ from pythonosc import udp_client
 
 client = SimpleUDPClient("127.0.0.1", 9000)
 
-print(f"Started OSC Server: https://github.com/aethefurry/discord-vrchat-presence")
 osc_message = ["", True]
 
 def send_message():
     osc_message[0] = string_to_forward
     client.send_message("/chatbox/input",osc_message)
-    print(string_to_forward)
+    print("Sent messange to VRChat!")
 
 global isPlaying
 isPlaying = False
@@ -58,7 +57,7 @@ def get_titles():
     EnumWindows(EnumWindowsProc(foreach_window), 0)
     return titles
 
-if __name__ == '__main__':
+def main():
     while True:
         current_media_info = asyncio.run(get_media_info())
 
@@ -91,3 +90,6 @@ if __name__ == '__main__':
         string_to_forward = ("RAM: " + str(mem_per) + "% | " + "GPU: " + str(load) + "% | " + "CPU: " + str(cpu_per) + "%" + " | " + str(now)+ " | " + str(song))
         send_message()
         time.sleep(2)
+
+if __name__ == '__main__':
+    main()

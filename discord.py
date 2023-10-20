@@ -7,9 +7,7 @@ from datetime import datetime
 import GPUtil
 import asyncio
 
-print(f"Started Discord RPC Server: https://github.com/aethefurry/discord-vrchat-presence")
-
-client_id = 'PUT YOU RPC ID HERE'
+client_id = '1164610063269384252'
 #https://discord.com/developers or create one with this link
 
 RPC = Presence(client_id, pipe=0)
@@ -55,9 +53,7 @@ def get_titles():
     EnumWindows(EnumWindowsProc(foreach_window), 0)
     return titles
     
-        
-
-if __name__ == '__main__':
+def main():
     while True:
         current_media_info = asyncio.run(get_media_info())
 
@@ -87,6 +83,8 @@ if __name__ == '__main__':
             song = "▶ "+current_media_info.get("title") + " - " + current_media_info.get("artist")
                             
         RPC.update(details="RAM: " + str(mem_per) + "% | " + "GPU: " + str(load) + "% | " + "CPU: " + str(cpu_per) + "%" + " | " + str(now), state=str(song))  # Set the presence
-        print(isPlaying)
-
+        print("Sent a message to Discord!")
         time.sleep(15)
+
+if __name__ == '__main__':
+    main()

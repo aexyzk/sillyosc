@@ -1,0 +1,10 @@
+launch discord rpc
+launch vrc osc
+
+install depidences
+
+settings (to change if time shows up, the timezone, if music shows up, if spoity is free or premuium, discord rpc id, wether to show specs, which specs to show, what separator)
+
+see current output
+
+(make the buttons disable if depent things arnt filled out (discord id or smth))

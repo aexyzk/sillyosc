@@ -1,8 +1,6 @@
-ctypes
 psutil
 pypresence
 GPUtil
 datetime
 asyncio
 python-osc
-tkinter

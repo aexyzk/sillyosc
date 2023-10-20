@@ -7,12 +7,6 @@ from datetime import datetime
 import GPUtil
 import asyncio
 
-client_id = '1164610063269384252'
-#https://discord.com/developers or create one with this link
-
-RPC = Presence(client_id, pipe=0)
-RPC.connect()
-
 global isPlaying
 isPlaying = False
 
@@ -54,6 +48,12 @@ def get_titles():
     return titles
     
 def main():
+    client_id = '1164610063269384252'
+    #https://discord.com/developers or create one with this link
+
+    RPC = Presence(client_id, pipe=0)
+    RPC.connect()
+
     while True:
         current_media_info = asyncio.run(get_media_info())
 

@@ -4,3 +4,4 @@ GPUtil
 datetime
 asyncio
 python-osc
+json

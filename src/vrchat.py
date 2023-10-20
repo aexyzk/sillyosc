@@ -57,7 +57,7 @@ def get_titles():
     EnumWindows(EnumWindowsProc(foreach_window), 0)
     return titles
 
-def main():
+def main(isSpotifyFree):
     while True:
         current_media_info = asyncio.run(get_media_info())
 
@@ -74,10 +74,16 @@ def main():
         for title in titles:
             title_combo = title_combo + title
             
-        if "Spotify Free" in title_combo:
-            isPlaying = False
-        if "Spotify Free" not in title_combo:
-            isPlaying = True
+        if (isSpotifyFree == True):
+            if "Spotify Free" in title_combo:
+                isPlaying = False
+            if "Spotify Free" not in title_combo:
+                isPlaying = True
+        else:
+            if "Spotify Premium" in title_combo:
+                isPlaying = False
+            if "Spotify Premium" not in title_combo:
+                isPlaying = True
 
         title_combo = ""
 

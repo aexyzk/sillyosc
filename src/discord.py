@@ -7,6 +7,9 @@ from datetime import datetime
 import GPUtil
 import asyncio
 
+#get the settings
+from main import settings
+
 global isPlaying
 isPlaying = False
 
@@ -47,9 +50,8 @@ def get_titles():
     EnumWindows(EnumWindowsProc(foreach_window), 0)
     return titles
     
-def main():
-    client_id = '1164610063269384252'
-    #https://discord.com/developers or create one with this link
+def main(isSpotifyFree, id):
+    client_id = str(id)
 
     RPC = Presence(client_id, pipe=0)
     RPC.connect()
@@ -69,11 +71,17 @@ def main():
         title_combo = ""
         for title in titles:
             title_combo = title_combo + title
-            
-        if "Spotify Free" in title_combo:
-            isPlaying = False
-        if "Spotify Free" not in title_combo:
-            isPlaying = True
+
+        if (isSpotifyFree == True):
+            if "Spotify Free" in title_combo:
+                isPlaying = False
+            if "Spotify Free" not in title_combo:
+                isPlaying = True
+        else:
+            if "Spotify Premium" in title_combo:
+                isPlaying = False
+            if "Spotify Premium" not in title_combo:
+                isPlaying = True
 
         title_combo = ""
 

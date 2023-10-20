@@ -4,14 +4,10 @@ import discord
 import subprocess, os
 import json
 
-#DiscordID, IsSpotifyFree, ToggleShowSystemUsage, ToggleShowLocalTime, ToggleShowMusic
-
+global settings
 settings = {
     "DiscordID": "",
     "IsSpotifyFree": True,
-    "ToggleShowSystemUsage": True,
-    "ToggleShowLocalTime": True,
-    "ToggleShowMusic": True
 }
 
 def save_settings():
@@ -30,10 +26,10 @@ def load_settings():
 load_settings()
 
 def vrchat_thread():
-    vrchat.main()
+    vrchat.main(settings["IsSpotifyFree"])
 
 def discord_thread():
-    discord.main()
+    discord.main(settings["IsSpotifyFree"], settings["DiscordID"])
 
 def main():
     os.system('cls')
@@ -46,11 +42,8 @@ def main():
                 print("(1) Set Your Discord RPC ID")
             else:
                 print("(1) Change Your Discord RPC ID"+" - current: "+str(settings["DiscordID"]))
-            print("(2) Is Spotify Free? (detects if media is paused)")
-            print("(3) Toggle Show System Usage")
-            print("(4) Toggle Show Local Time")
-            print("(5) Toggle Show Music")
-            print("(6) Main Menu")
+            print("(2) Is Spotify Free? (detects if media is paused)"+" - "+str(settings["IsSpotifyFree"]))
+            print("(3) Main Menu")
             settings_choice = int(input())
 
             if settings_choice == 1:
@@ -60,7 +53,15 @@ def main():
                 save_settings()
                 print("Saved!")
 
-            if settings_choice == 6:
+            if settings_choice == 2:
+                if settings["IsSpotifyFree"] == True:
+                    settings["IsSpotifyFree"] = False
+                else:
+                    settings["IsSpotifyFree"] = True
+                save_settings()
+                os.system("cls")
+
+            if settings_choice == 3:
                 save_settings()
                 os.system("cls")
                 choice = 0
@@ -90,7 +91,7 @@ def main():
             discord_thread()
 
         if choice == 4:
-            subprocess.run("pip install -r dep.txt")#
+            subprocess.run("pip install -r dep.txt")
 
         if choice == 5:
             os.system("cls")

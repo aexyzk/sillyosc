@@ -11,8 +11,10 @@
 
 (Intial Setup)
 1. Install Python (I used 3.11)
-2. Open "main.py"
-3. Go to "(4) Install Dependencies"
+2. Decompress the .zip
+3. Use Powershell, Alacritty, or any other Terminal, to navigate to the folder "src".
+4. Run "python3 ./main.py"
+5. Go to "(4) Install Dependencies"
 
 (Reqired For Discord)
 1. Go to Discord Dev Hub https://discord.com/developers/applications

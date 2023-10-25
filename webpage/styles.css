@@ -1,0 +1,75 @@
+:root {
+    --primary: #5f83e4;
+    --primaryVariant: #293556;
+    --secondary: #03DAC6;
+    --secondaryVariant: #018786;
+    --error: #B00020;
+    --darkerBackground: #0f1012;
+    --background: #16171a;
+    --lighterBackground: #212226;
+    --lightestBackground: #2c2d31;
+    --onBackground: #dbdee1;
+}
+
+* {
+    color: var(--onBackground);
+    font-family: Helvetica, sans-serif;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background-color: var(--background);
+    width: 100%;
+    height: 100%;
+}
+
+header {
+    height: 48px;
+    background-color: var(--darkerBackground);
+}
+
+h1 {
+    color: var(--onBackground);
+}
+
+.row {
+    margin: 15px;
+    display: flex;
+    flex-direction: row;
+    height: 500px;
+}
+
+.cli {
+    height: 100%;
+    background-color: var(--lighterBackground);
+    border: 2px solid var(--lightestBackground);
+}
+
+.main-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary);
+    transition: background-color 100ms;
+    width: 300px;
+    height: 100px;
+    margin: 0px;
+    border: var(--lighterBackground) 2px solid;
+    text-align: center;
+    border-radius: 2%/6%;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.button:hover {
+    background-color: var(--primaryVariant);
+}
+

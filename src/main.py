@@ -66,6 +66,8 @@ def main():
                 os.system("cls")
                 choice = 0
         print("*** Discord and VRChat Presence ***")
+        if settings["DiscordID"] == "":
+            print("** SET A DISCORD ID IN THE SETTINGS!**")
         print("(1) Start Both")
         print("(2) Start VRChat OSC")
         print("(3) Start Discord RPC")

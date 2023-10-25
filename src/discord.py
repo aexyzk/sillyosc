@@ -19,17 +19,20 @@ from winsdk.windows.media.control import \
     GlobalSystemMediaTransportControlsSessionPlaybackStatus  as PlaybackStatus
 
 async def get_media_info():
-    sessions = await MediaManager.request_async()
+    try:
+        sessions = await MediaManager.request_async()
 
-    current_session = sessions.get_current_session()
-    if current_session:
-        info = await current_session.try_get_media_properties_async()
-        info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
-        info_dict['genres'] = list(info_dict['genres'])
+        current_session = sessions.get_current_session()
+        if current_session:
+            info = await current_session.try_get_media_properties_async()
+            info_dict = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
+            info_dict['genres'] = list(info_dict['genres'])
 
-        return info_dict
-    else:
-        pass
+            return info_dict
+        else:
+            pass
+    except:
+        print("No Media Player Session!")
 
 def get_titles(): 
     EnumWindows = ctypes.windll.user32.EnumWindows
@@ -51,7 +54,11 @@ def get_titles():
     return titles
     
 def main(isSpotifyFree, id):
-    client_id = str(id)
+    if id != "":
+        client_id = str(id)
+    else:
+        print("Make sure you have a Discord ID set!")
+        return
 
     RPC = Presence(client_id, pipe=0)
     RPC.connect()
@@ -85,10 +92,14 @@ def main(isSpotifyFree, id):
 
         title_combo = ""
 
-        if isPlaying == False:
-            song="⏸️ Paused"
-        elif isPlaying == True:
-            song = "▶ "+current_media_info.get("title") + " - " + current_media_info.get("artist")
+        if current_media_info != None:
+            if isPlaying == False:
+                song="⏸️ Paused"
+            elif isPlaying == True:
+                song = "▶ "+current_media_info.get("title") + " - " + current_media_info.get("artist")
+        else:
+            song = "No Media Player Detected"
+            print("No Media Player Detected!")
                             
         RPC.update(details="RAM: " + str(mem_per) + "% | " + "GPU: " + str(load) + "% | " + "CPU: " + str(cpu_per) + "%" + " | " + str(now), state=str(song))  # Set the presence
         print("Sent a message to Discord!")

@@ -7,16 +7,20 @@ def get_music(addr, port):
         client = MPDClient()
 
         client.connect(addr, port)
-        print(addr, port)
         client.update()
-
+        
         status = client.status()
         song = client.currentsong()
-        
+            
         if status["state"] == "pause":
             output ="⏸️ Paused"
         else:
-            output = f"▶️ {song['artist']} - {song['title']}"
+            if song is not None:
+                artist = song.get('artist', 'Unknown Artist')
+                title = song.get('title', 'Unknown Title')
+                output = f"▶️ {artist} - {title}"
+            else:
+                output = "No songs in queue"
     except ConnectionError:
         output = "MPD Offline :3"
 

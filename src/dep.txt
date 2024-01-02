@@ -4,4 +4,5 @@ GPUtil
 datetime
 asyncio
 python-osc
-json
+python-mpd2
+winsdk

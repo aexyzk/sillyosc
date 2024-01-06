@@ -22,6 +22,6 @@
 4. Go to "(5) Settings"
 5. Set your Discord RPC ID to the one you just copied
 
-### You can change your addresses for MPD and OSC (for quest or any other standalone vrchat) in the settings
+### (You can change your addresses for MPD and OSC (for quest or any other standalone vrchat) in the settings)
 
 Then you're all good

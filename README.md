@@ -25,3 +25,5 @@
 ### (You can change your addresses for MPD and OSC (for quest or any other standalone vrchat) in the settings)
 
 Then you're all good
+
+(if you run into any bugs you can report them on github or contact me here https://aexyzk.github.io/contact)

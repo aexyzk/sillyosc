@@ -1,5 +1,5 @@
 # Discord VRChat Presence
- a vrchat osc and discord rpc server that match up, very scuffed (USES MPD NOW)
+ a vrchat osc and discord rpc server that match up, very scuffed (USES MPD NOW) better spotify support is on the way
 
  ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/discord.png?raw=true)
  ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/vrc.png?raw=true)

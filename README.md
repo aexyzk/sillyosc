@@ -1,5 +1,5 @@
 # Discord VRChat Presence
- a vrchat osc and discord rpc server that match up, very scuffed (USES MPD NOW) better spotify support is on the way
+### Currently being updated, full realese should be out soon however for the time being you could use the old python version in the releases.
 
  ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/discord.png?raw=true)
  ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/vrc.png?raw=true)
@@ -27,3 +27,14 @@
 Then you're all good
 
 (if you run into any bugs you can report them on github or contact me here https://aexyzk.github.io/contact)
+
+## Things To Do
+ - ~~Memory Status~~
+ - GPU Status
+ - CPU Status
+ - Add MPD Support
+ - Add the settings Menu
+ - Try to fix the button highlights
+ - Make settings save in the %appdata% as a .json file
+ - Get some nice little SVGs for the icons (Start, Stop, Github, Settings)
+ - Make Errors show up at the bottom of the program

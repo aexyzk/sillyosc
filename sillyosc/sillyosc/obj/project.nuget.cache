@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "vmsz978TERCOw1oPP75ImK+hHwiiDx8a3thUaRuqZxF/P9mv7e2xS6MED988/5/obWxGZ9NuGa0zY3Vy7L8/9w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ae\\Documents\\GitHub\\discord-vrchat-presence\\sillyosc\\sillyosc\\sillyosc.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ae\\.nuget\\packages\\mpcnet\\1.5.0\\mpcnet.1.5.0.nupkg.sha512",
+    "C:\\Users\\ae\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\ae\\.nuget\\packages\\polly\\7.2.2\\polly.7.2.2.nupkg.sha512",
+    "C:\\Users\\ae\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

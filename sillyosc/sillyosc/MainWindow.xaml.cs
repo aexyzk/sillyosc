@@ -5,6 +5,8 @@ using System.Threading;
 using System.Globalization;
 
 using SharpOSC;
+using DiscordRPC;
+using DiscordRPC.Logging;
 
 namespace guitest
 {
@@ -28,6 +30,10 @@ namespace guitest
 
         // System Status Shiz
         static PerformanceCounter? ramCounter;
+
+        // Discord
+        string clientID = "1164610063269384252";
+        public DiscordRpcClient client;
 
         public MainWindow()
         {
@@ -57,6 +63,8 @@ namespace guitest
 
                 //run osc
                 var oscTask = Task.Run(() => RunOSC());
+                //run rpc
+                var rpcTask = Task.Run(() => RunRPC());
             }
 
             Running = !Running;
@@ -85,12 +93,47 @@ namespace guitest
             }
         }
 
+        public void RunRPC()
+        {
+            InitDiscordRPC();
+
+            while (Running)
+            {
+                client.SetPresence(new RichPresence()
+                {
+                    Details = $"{GetTime()} {GetSystemInfo()}",
+                    State = $"Music: {GetMusic()}",
+                });
+                Thread.Sleep(15000);
+            }
+
+            Deinitialize();
+        }
+
         static string SendMessageOSC(string msg)
         {
             var message = new SharpOSC.OscMessage("/chatbox/input", msg, true);
             var sender = new SharpOSC.UDPSender(oscADDRESS, oscPORT);
             sender.Send(message);
             return ($"'{msg}'");
+        }
+
+        void InitDiscordRPC() {
+            client = new DiscordRpcClient(clientID);
+
+            client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+
+            client.OnReady += (sender, e) => 
+            {
+                Console.WriteLine("Recived ready from user {0}", e.User.Username);  
+            };
+
+            client.OnPresenceUpdate += (sender, e) =>
+            {
+                Console.WriteLine("Recived update: {0}", e.Presence);
+            };
+
+            client.Initialize();
         }
 
         static string GetTime()
@@ -120,14 +163,7 @@ namespace guitest
                         if (spotifyTitleArray.Length > 1)
                         {
                             paused = false;
-                            if (scrollMusic)
-                            {
-                                return $" - {spotifyTitleArray[0]} - {spotifyTitleArray[1]}";
-                            }
-                            else
-                            {
-                                return $"{spotifyTitleArray[0]} - {spotifyTitleArray[1]}";
-                            }
+                            return $"{spotifyTitleArray[0]} - {spotifyTitleArray[1]}";
                         }
                         else
                         {
@@ -151,7 +187,7 @@ namespace guitest
 
         public static string GetSystemInfo()
         {
-            return $"CPU: {0}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1} GB/{Math.Round(getTotalRAM()):F1} GB GPU: {0}%";
+            return $"CPU: {getCPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1} GB/{Math.Round(getTotalRAM()):F1} GB GPU: {getGPUusage()}%";
         }
 
         static public double getUsedRAM()
@@ -173,13 +209,24 @@ namespace guitest
             return new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / (1024.0 * 1024 * 1024.0);
         }
 
+        static public double getGPUusage() {
+            
+            return 0;
+        }
+
+        static public double getCPUusage()
+        {
+
+            return 0;
+        }
+
         static string Scroll(string text)
         {
             if (paused != true)
             {
                 if (last_song != text)
                 {
-                    scrolling_title = text;
+                    scrolling_title = $" - {text}";
                     last_song = text;
                 }
 
@@ -199,6 +246,12 @@ namespace guitest
         {
             Process[] p = Process.GetProcessesByName("Spotify");
             return p;
+        }
+
+        // Dont cause a memory leak cause that bad i reckon probubly
+        void Deinitialize()
+        {
+            client.Dispose();
         }
     }
 }

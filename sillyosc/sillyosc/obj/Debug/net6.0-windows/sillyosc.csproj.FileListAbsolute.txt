@@ -26,3 +26,4 @@ C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\bin\Debug
 C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\bin\Debug\net6.0-windows\Polly.dll
 C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\bin\Debug\net6.0-windows\SharpOSC.dll
 C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\obj\Debug\net6.0-windows\sillyosc.csproj.CopyComplete
+C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\bin\Debug\net6.0-windows\DiscordRPC.dll

@@ -7,6 +7,7 @@ using System.Globalization;
 using SharpOSC;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using System.Windows.Media;
 
 namespace guitest
 {
@@ -30,6 +31,7 @@ namespace guitest
 
         // System Status Shiz
         static PerformanceCounter? ramCounter;
+        static PerformanceCounter? cpuCounter;
 
         // Discord
         string clientID = "1164610063269384252";
@@ -38,6 +40,7 @@ namespace guitest
         public MainWindow()
         {
             ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            cpuCounter = new PerformanceCounter("processor information", "% processor utility", "_total");
 
             InitializeComponent();
         }
@@ -204,20 +207,19 @@ namespace guitest
             }
         }
 
-        static public double getTotalRAM()
+        static double getTotalRAM()
         {
             return new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / (1024.0 * 1024 * 1024.0);
         }
 
-        static public double getGPUusage() {
+        static double getGPUusage() {
             
             return 0;
         }
 
-        static public double getCPUusage()
+        static int getCPUusage()
         {
-
-            return 0;
+            return (int)cpuCounter.NextValue();
         }
 
         static string Scroll(string text)

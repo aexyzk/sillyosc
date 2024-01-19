@@ -38,4 +38,4 @@ Then you're all good
  - Make settings save in the %appdata% as a .json file
  - Get some nice little SVGs for the icons (Start, Stop, Github, Settings)
  - Make Errors show up at the bottom of the program
- - ~~Discord RPC~~~
+ - ~~Discord RPC~~

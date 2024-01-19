@@ -31,7 +31,7 @@ Then you're all good
 ## Things To Do
  - ~~Memory Status~~
  - GPU Status
- - CPU Status
+ - ~~CPU Status~~
  - Add MPD Support
  - Add the settings Menu
  - Try to fix the button highlights

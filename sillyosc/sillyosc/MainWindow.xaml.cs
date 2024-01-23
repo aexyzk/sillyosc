@@ -7,7 +7,6 @@ using System.Globalization;
 using SharpOSC;
 using DiscordRPC;
 using DiscordRPC.Logging;
-using System.Windows.Media;
 
 namespace guitest
 {
@@ -17,11 +16,12 @@ namespace guitest
         static string oscADDRESS = "127.0.0.1";
         static int oscPORT = 9000;
 
-        static int musicPlayerIndex = 0;
-        // 0 spotify
-        // 1 mpd
+        static int musicPlayerIndex = 2;
+        // 0 disabled
+        // 1 spotify
+        // 2 winamp
 
-        static bool scrollMusic = true;
+        static bool scrollMusic = false;
         static string last_song = "";
         static string scrolling_title = "";
         static int max_scroll_length = 20;
@@ -35,7 +35,7 @@ namespace guitest
 
         // Discord
         string clientID = "1164610063269384252";
-        public DiscordRpcClient client;
+        public DiscordRpcClient? client;
 
         public MainWindow()
         {
@@ -104,8 +104,8 @@ namespace guitest
             {
                 client.SetPresence(new RichPresence()
                 {
-                    Details = $"{GetTime()} {GetSystemInfo()}",
-                    State = $"Music: {GetMusic()}",
+                    Details = $"{GetSystemInfo()}",
+                    State = $"{GetTime()} | Music: {GetMusic()}",
                 });
                 Thread.Sleep(15000);
             }
@@ -154,9 +154,9 @@ namespace guitest
 
         public static string GetMusic()
         {
-            if (musicPlayerIndex == 0)
+            if (musicPlayerIndex == 1) // Spotify
             {
-                Process[] spotifyProcess = FindProcess();
+                Process[] spotifyProcess = FindProcess("Spotify");
 
                 if (spotifyProcess.Length > 0)
                 {
@@ -175,17 +175,48 @@ namespace guitest
                         }
                     }
                 }
+                else {
+                    return "Spotify isn't detected!";
+                }
             }
-            else if (musicPlayerIndex == 1)
+            else if (musicPlayerIndex == 2) // Winamp
             {
-                return "mpd";
+                try
+                {
+                    Process[] winampProcess = FindProcess("Winamp");
+
+                    if (winampProcess.Length > 0)
+                    {
+                        if (winampProcess[0].MainWindowTitle.ToString().Contains("[Stopped]"))
+                        {
+                            paused = true;
+                            return "[Stopped]";
+                        }
+                        else if (winampProcess[0].MainWindowTitle.ToString().Contains("[Paused]"))
+                        {
+                            paused = true;
+                            return "Paused";
+                        }
+                        else
+                        {
+                            paused = false;
+
+                            string[] words = (winampProcess[0].MainWindowTitle.ToString()).Split(". ");
+
+                            return words[1].Substring(0, words[1].Length - 9);
+                        }
+                    }
+                }
+                catch
+                {
+                    return "Winamp isn't detected!";
+                }
             }
             else
             {
-                return "Error: not a valid media player option: chose 0: spotify 1: mpd";
+                return "No Vaild Media Player Detected.";
             }
-
-            return "Error: hopefully you aren't seeing this error";
+            return ";opahghusg";
         }
 
         public static string GetSystemInfo()
@@ -212,8 +243,10 @@ namespace guitest
             return new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / (1024.0 * 1024 * 1024.0);
         }
 
-        static double getGPUusage() {
+        static double getGPUusage() 
+        {
             
+
             return 0;
         }
 
@@ -244,9 +277,9 @@ namespace guitest
             return "Error: error with scrolling";
         }
 
-        static Process[] FindProcess()
+        static Process[] FindProcess(string windowTitle)
         {
-            Process[] p = Process.GetProcessesByName("Spotify");
+            Process[] p = Process.GetProcessesByName(windowTitle);
             return p;
         }
 

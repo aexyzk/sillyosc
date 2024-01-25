@@ -44,3 +44,4 @@ Then you're all good
  - ~~VRChat OSC~~
  - ~~Local Time~~
  - ~~GUI~~
+ - Make a web page for this

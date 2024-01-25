@@ -33,6 +33,7 @@ Then you're all good
  - GPU Status
  - ~~CPU Status~~
  - Add MPD Support
+ - ~~Add Spotify Support~~
  - ~~Add Winamp Support~~
  - Add the settings Menu
  - Try to fix the button highlights

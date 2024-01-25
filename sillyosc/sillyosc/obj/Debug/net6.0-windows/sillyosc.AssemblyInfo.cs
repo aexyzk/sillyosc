@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("sillyosc")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ca3753a434c7c9a79f94597d24ee1bfc0fb5325")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2b7b2d82791d84aa6562a2af1ddf45a5246da86")]
 [assembly: System.Reflection.AssemblyProductAttribute("sillyosc")]
 [assembly: System.Reflection.AssemblyTitleAttribute("sillyosc")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

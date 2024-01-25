@@ -36,7 +36,7 @@ Then you're all good
  - ~~Add Winamp Support~~
  - Add the settings Menu
  - Try to fix the button highlights
- - Make settings save in the %appdata% as a .json file
+ - Save settings
  - Get some nice little SVGs for the icons (Start, Stop, Github, Settings)
- - Make Errors show up at the bottom of the program
+ - ~~Make Errors show up at the bottom of the program~~
  - ~~Discord RPC~~

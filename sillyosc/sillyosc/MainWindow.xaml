@@ -29,8 +29,9 @@
             <TextBlock Text="" Name="OutputBox" Margin="22 62 22 22" Grid.Row="1" FontSize="32" TextWrapping="Wrap" Foreground="White"/>
 
             <!-- Footer -->
-            <Rectangle Fill="#CF1B45" Grid.Row="2"/>
-            <TextBlock Text="" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Width="38" Grid.Column="1" Grid.Row="3"/>
+            <Rectangle Fill="#15001F" Grid.Row="2" Name="ErrorBox"/> 
+            <!-- CF1B45 -->
+            <TextBlock Text="" FontSize="17" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Foreground="White" Name="ErrorMsg"/>
         </Grid>
 
         <Grid Grid.Column="0">

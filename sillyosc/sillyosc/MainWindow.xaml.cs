@@ -1,46 +1,64 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Diagnostics;
-using System.Timers;
-using System.Threading;
 using System.Globalization;
+using System.Windows.Media;
 
 using SharpOSC;
 using DiscordRPC;
 using DiscordRPC.Logging;
+using System.Text;
+
+// Pls dont mind my spagetti code :3
 
 namespace guitest
 {
     public partial class MainWindow : System.Windows.Window
     {
-        static bool Running = false;
-        static string oscADDRESS = "127.0.0.1";
-        static int oscPORT = 9000;
+        bool Running = false;
 
-        static int musicPlayerIndex = 2;
+        readonly string fileName = "config.silly";
+
+        //Vars set by config.ini
+        string clientID = "1164610063269384252";
+        string oscAddress = "127.0.0.1";
+        int oscPort = 9000;
+
+        int musicPlayerIndex = 2;
         // 0 disabled
         // 1 spotify
         // 2 winamp
+        // 3 mpd
+        
+        bool scrollMusic = false;
+        int maxScrollLength = 20;
+        int scrollAmountPerFrame = 2;
+        bool twentyFourHourTime = true;
+        //End
 
-        static bool scrollMusic = false;
-        static string last_song = "";
-        static string scrolling_title = "";
-        static int max_scroll_length = 20;
-        static int scroll_amount_per_frame = 2;
-        static bool twenty_four_hour_time = true;
-        static bool paused = false;
+        bool paused = false;
+        string lastSong = "";
+        string scrollingTitle = "";
 
         // System Status Shiz
-        static PerformanceCounter? ramCounter;
-        static PerformanceCounter? cpuCounter;
+        PerformanceCounter? ramCounter;
+        PerformanceCounter? cpuCounter;
 
         // Discord
-        string clientID = "1164610063269384252";
         public DiscordRpcClient? client;
 
         public MainWindow()
         {
-            ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-            cpuCounter = new PerformanceCounter("processor information", "% processor utility", "_total");
+            //createOrFindConfigFile();
+
+            try
+            {
+                ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                cpuCounter = new PerformanceCounter("processor information", "% processor utility", "_total");
+            }catch(Exception e)
+            {
+                error($"Couldn't Initalize CPU or RAM counter: {e.Message}");
+            }
 
             InitializeComponent();
         }
@@ -75,22 +93,37 @@ namespace guitest
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            OutputBox.Text = $"Edit the config file at: \n{1}\n(there will be a gui for this in the future)";
         }
 
         public void RunOSC()
         {
             while (Running)
             {
-                if (scrollMusic)
+                try
                 {
-                    string message_to_send = $"Music: |{Scroll(GetMusic())}| {GetTime()} | {GetSystemInfo()}";
-                    Dispatcher.Invoke(() => OutputBox.Text = SendMessageOSC(message_to_send));
-                }
-                else
+                    if (musicPlayerIndex != 0)
+                    {
+                        if (scrollMusic)
+                        {
+                            string message_to_send = $"Music: |{Scroll(GetMusic())}| {GetTime()} | {GetSystemInfo()}";
+                            Dispatcher.Invoke(() => OutputBox.Text = SendMessageOSC(message_to_send));
+                        }
+                        else
+                        {
+                            string message_to_send = $"Music: {GetMusic()} | {GetTime()} | {GetSystemInfo()}";
+                            Dispatcher.Invoke(() => OutputBox.Text = SendMessageOSC(message_to_send));
+                        }
+                    }
+                    else
+                    {
+                        string message_to_send = $"{GetTime()} | {GetSystemInfo()}";
+                        Dispatcher.Invoke(() => OutputBox.Text = SendMessageOSC(message_to_send));
+                    }
+                }catch (Exception e)
                 {
-                    string message_to_send = $"Music: {GetMusic()} | {GetTime()} | {GetSystemInfo()}";
-                    Dispatcher.Invoke(() => OutputBox.Text = SendMessageOSC(message_to_send));
+                    error($"something went wrong with sending osc: {e.Message}: stopping osc/rpc...");
+                    Running = false;
                 }
                 Thread.Sleep(2000);
             }
@@ -98,51 +131,86 @@ namespace guitest
 
         public void RunRPC()
         {
-            InitDiscordRPC();
-
-            while (Running)
+            try
             {
-                client.SetPresence(new RichPresence()
+                InitDiscordRPC();
+
+                while (Running)
                 {
-                    Details = $"{GetSystemInfo()}",
-                    State = $"{GetTime()} | Music: {GetMusic()}",
-                });
-                Thread.Sleep(15000);
+                    try
+                    {
+                        if (client != null)
+                        {
+                            client.SetPresence(new RichPresence()
+                            {
+                                Details = $"{GetSystemInfo()}",
+                                State = $"{GetTime()} | Music: {GetMusic()}",
+                            });
+                            Thread.Sleep(15000);
+                        }
+                        else
+                        {
+                            error("Error: Couldn't create a connection to a Discord RPC client. (verify your clientID) Trying again...");
+                            InitDiscordRPC();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        error($"Couldn't find Disord RPC client: {e}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                error($"something went wrong with sending rpc: {e.Message}: stopping osc/rpc...");
+                Running = false;
             }
 
-            Deinitialize();
+            if (client != null)
+            {
+                Deinitialize();
+            }
         }
 
-        static string SendMessageOSC(string msg)
+         string SendMessageOSC(string msg)
         {
             var message = new SharpOSC.OscMessage("/chatbox/input", msg, true);
-            var sender = new SharpOSC.UDPSender(oscADDRESS, oscPORT);
+            var sender = new SharpOSC.UDPSender(oscAddress, oscPort);
             sender.Send(message);
             return ($"'{msg}'");
         }
 
         void InitDiscordRPC() {
-            client = new DiscordRpcClient(clientID);
-
-            client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
-
-            client.OnReady += (sender, e) => 
+            try
             {
-                Console.WriteLine("Recived ready from user {0}", e.User.Username);  
-            };
+                if (clientID != "")
+                {
+                    client = new DiscordRpcClient(clientID);
 
-            client.OnPresenceUpdate += (sender, e) =>
+                    client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+
+                    client.OnReady += (sender, e) =>
+                    {
+                        Console.WriteLine("Recived ready from user {0}", e.User.Username);
+                    };
+
+                    client.OnPresenceUpdate += (sender, e) =>
+                    {
+                        Console.WriteLine("Recived update: {0}", e.Presence);
+                    };
+
+                    client.Initialize();
+                }
+            }catch (Exception e)
             {
-                Console.WriteLine("Recived update: {0}", e.Presence);
-            };
-
-            client.Initialize();
+                error($"Couldn't create a vaild connection to Discord RPC (bad clientID?) {e.Message}");
+            }
         }
 
-        static string GetTime()
+         string GetTime()
         {
             DateTime currentTime = DateTime.Now;
-            if (twenty_four_hour_time)
+            if (twentyFourHourTime)
             {
                 return currentTime.ToString("HH:mm");
             }
@@ -152,7 +220,7 @@ namespace guitest
             }
         }
 
-        public static string GetMusic()
+        public  string GetMusic()
         {
             if (musicPlayerIndex == 1) // Spotify
             {
@@ -214,17 +282,17 @@ namespace guitest
             }
             else
             {
-                return "No Vaild Media Player Detected.";
+                return "None";
             }
             return ";opahghusg";
         }
 
-        public static string GetSystemInfo()
+        public  string GetSystemInfo()
         {
-            return $"CPU: {getCPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1} GB/{Math.Round(getTotalRAM()):F1} GB GPU: {getGPUusage()}%";
+            return $"CPU: {getCPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1}/{Math.Round(getTotalRAM()):F1} GB GPU: {0}%";
         }
 
-        static public double getUsedRAM()
+         public double getUsedRAM()
         {
             if (ramCounter != null)
             {
@@ -233,7 +301,7 @@ namespace guitest
             }
             else
             {
-                Console.WriteLine("You have no ram, which i really hope you do cause otherwise you are a magic man :3");
+                error("Couldn't find ram or you have no ram, which i really hope you do cause otherwise you are a magic man :3");
                 return 0;
             }
         }
@@ -243,38 +311,38 @@ namespace guitest
             return new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / (1024.0 * 1024 * 1024.0);
         }
 
-        static double getGPUusage() 
+         int getCPUusage()
         {
-            
-
-            return 0;
+            if (cpuCounter != null)
+            {
+                return (int)cpuCounter.NextValue();
+            }
+            else
+            {
+                error("Couldn't find CPU");
+                return (0);
+            }
         }
-
-        static int getCPUusage()
-        {
-            return (int)cpuCounter.NextValue();
-        }
-
-        static string Scroll(string text)
+                 string Scroll(string text)
         {
             if (paused != true)
             {
-                if (last_song != text)
+                if (lastSong != text)
                 {
-                    scrolling_title = $" - {text}";
-                    last_song = text;
+                    scrollingTitle = $" - {text}";
+                    lastSong = text;
                 }
 
-                string scrolledPart = scrolling_title.Substring(0, scroll_amount_per_frame);
-                scrolling_title = scrolling_title.Substring(scroll_amount_per_frame) + scrolledPart;
+                string scrolledPart = scrollingTitle.Substring(0, scrollAmountPerFrame);
+                scrollingTitle = scrollingTitle.Substring(scrollAmountPerFrame) + scrolledPart;
 
-                return scrolling_title.Substring(0, Math.Min(scrolling_title.Length, max_scroll_length));
+                return scrollingTitle.Substring(0, Math.Min(scrollingTitle.Length, maxScrollLength));
             }
             else if (paused)
             {
                 return text;
             }
-            return "Error: error with scrolling";
+            return "Scrolling broke, somehow?";
         }
 
         static Process[] FindProcess(string windowTitle)
@@ -286,7 +354,51 @@ namespace guitest
         // Dont cause a memory leak cause that bad i reckon probubly
         void Deinitialize()
         {
-            client.Dispose();
+            if (client != null)
+            {
+                client.Dispose();
+            }
+            else
+            {
+                error("Couldn't destroy Discord RPC Client Connection, as it doesn't exist.");
+            }
+        }
+
+        public  void createOrFindConfigFile()
+        {
+            if (File.Exists(fileName))
+            {
+                warn("Config already exists");
+            }
+            else
+            {
+                try
+                {
+                    warn("Can't find configuration file, creating a config file for you with defaults");
+                    using (FileStream fs = File.Create(fileName))
+                    {
+                        string defaultConfig = "clientID: '1164610063269384252' \n oscAddress: \n '127.0.0.1' \n oscPort: 9000 \n scrollMusic: false \n maxScrollLength: 20 \n scrollAmountPerFrame: 2 \n twentyFourHourTime: true \n musicPlayerIndex: 0 \n # 0 disabled \n # 1 spotify \n # 2 winamp \n # 3 mpd (not setup yet)";
+                        Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
+                        fs.Write(configFileBytes);
+                    }
+                }
+                catch (Exception e)
+                {
+                    error($"Couldn't create a configuration file: (please restart the program): {e.Message}");
+                }
+            }
+        }
+
+        public void error(string message)
+        {
+            ErrorBox.Fill = new SolidColorBrush(Colors.Red);
+            ErrorMsg.Text = $"Error: {message}";
+        }
+
+        public void warn(string message)
+        {
+            ErrorBox.Fill = new SolidColorBrush(Colors.Orange);
+            ErrorMsg.Text = $"Warning: {message}";
         }
     }
 }

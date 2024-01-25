@@ -41,3 +41,6 @@ Then you're all good
  - Get some nice little SVGs for the icons (Start, Stop, Github, Settings)
  - ~~Make Errors show up at the bottom of the program~~
  - ~~Discord RPC~~
+ - ~~VRChat OSC~~
+ - ~~Local Time~~
+ - ~~GUI~~

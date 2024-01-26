@@ -93,7 +93,15 @@ namespace guitest
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            OutputBox.Text = $"Edit the config file at: \n{1}\n(there will be a gui for this in the future)";
+            try
+            {
+                sillyosc.Settings settingsMenuInst = new sillyosc.Settings();
+                settingsMenuInst.Show();
+            }
+            catch
+            {
+                error("Couldn't open settings menu!");
+            }
         }
 
         public void RunOSC()

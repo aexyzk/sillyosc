@@ -24,7 +24,7 @@ namespace guitest
         string oscAddress = "127.0.0.1";
         int oscPort = 9000;
 
-        int musicPlayerIndex = 2;
+        int musicPlayerIndex = 1;
         // 0 disabled
         // 1 spotify
         // 2 winamp
@@ -65,7 +65,7 @@ namespace guitest
 
         private void GithubButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo("https://github.com/aexyzk/discord-vrchat-presence") { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo("https://aexyzk.github.io/sillyosc") { UseShellExecute = true });
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -133,7 +133,8 @@ namespace guitest
                     error($"something went wrong with sending osc: {e.Message}: stopping osc/rpc...");
                     Running = false;
                 }
-                Thread.Sleep(2000);
+                // 2 seconds but without one second that gets taken up by the GetSystemInfo() method
+                Thread.Sleep(1000);
             }
         }
 
@@ -154,7 +155,8 @@ namespace guitest
                                 Details = $"{GetSystemInfo()}",
                                 State = $"{GetTime()} | Music: {GetMusic()}",
                             });
-                            Thread.Sleep(15000);
+                            // 15 seconds but without one second that gets taken up by the GetSystemInfo() method
+                            Thread.Sleep(14000);
                         }
                         else
                         {
@@ -188,7 +190,8 @@ namespace guitest
             return ($"'{msg}'");
         }
 
-        void InitDiscordRPC() {
+        void InitDiscordRPC()
+        {
             try
             {
                 if (clientID != "")
@@ -257,33 +260,30 @@ namespace guitest
             }
             else if (musicPlayerIndex == 2) // Winamp
             {
-                try
+                Process[] winampProcess = FindProcess("Winamp");
+
+                if (winampProcess.Length > 0)
                 {
-                    Process[] winampProcess = FindProcess("Winamp");
-
-                    if (winampProcess.Length > 0)
+                    if (winampProcess[0].MainWindowTitle.ToString().Contains("[Stopped]"))
                     {
-                        if (winampProcess[0].MainWindowTitle.ToString().Contains("[Stopped]"))
-                        {
-                            paused = true;
-                            return "[Stopped]";
-                        }
-                        else if (winampProcess[0].MainWindowTitle.ToString().Contains("[Paused]"))
-                        {
-                            paused = true;
-                            return "Paused";
-                        }
-                        else
-                        {
-                            paused = false;
+                        paused = true;
+                        return "[Stopped]";
+                    }
+                    else if (winampProcess[0].MainWindowTitle.ToString().Contains("[Paused]"))
+                    {
+                        paused = true;
+                        return "Paused";
+                    }
+                    else
+                    {
+                        paused = false;
 
-                            string[] words = (winampProcess[0].MainWindowTitle.ToString()).Split(". ");
+                        string[] words = (winampProcess[0].MainWindowTitle.ToString()).Split(". ");
 
-                            return words[1].Substring(0, words[1].Length - 9);
-                        }
+                        return words[1].Substring(0, words[1].Length - 9);
                     }
                 }
-                catch
+                else
                 {
                     return "Winamp isn't detected!";
                 }
@@ -292,12 +292,12 @@ namespace guitest
             {
                 return "None";
             }
-            return ";opahghusg";
+            return "Error Detecting Music uhh idk x3";
         }
 
         public  string GetSystemInfo()
         {
-            return $"CPU: {getCPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1}/{Math.Round(getTotalRAM()):F1} GB GPU: {0}%";
+            return $"CPU: {getCPUusage()}% GPU: {getGPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1}/{Math.Round(getTotalRAM()):F1} GB";
         }
 
          public double getUsedRAM()
@@ -319,7 +319,7 @@ namespace guitest
             return new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory / (1024.0 * 1024 * 1024.0);
         }
 
-         int getCPUusage()
+        int getCPUusage()
         {
             if (cpuCounter != null)
             {
@@ -331,7 +331,52 @@ namespace guitest
                 return (0);
             }
         }
-                 string Scroll(string text)
+
+        public static double getGPUusage()
+        {
+            try
+            {
+                var category = new PerformanceCounterCategory("GPU Engine");
+                var counterNames = category.GetInstanceNames();
+                var gpuCounters = new List<PerformanceCounter>();
+                var result = 0f;
+
+                foreach (string counterName in counterNames)
+                {
+                    if (counterName.EndsWith("engtype_3D"))
+                    {
+                        foreach (PerformanceCounter counter in category.GetCounters(counterName))
+                        {
+                            if (counter.CounterName == "Utilization Percentage")
+                            {
+                                gpuCounters.Add(counter);
+                            }
+                        }
+                    }
+                }
+
+                gpuCounters.ForEach(x =>
+                {
+                    _ = x.NextValue();
+                });
+
+                // idk why i need to sleep for a sec but it makes results more accurate soooooooo
+                Thread.Sleep(1000);
+
+                gpuCounters.ForEach(x =>
+                {
+                    result += x.NextValue();
+                });
+
+                return Math.Round(result);
+            }
+            catch
+            {
+                return 0f;
+            }
+        }
+
+        string Scroll(string text)
         {
             if (paused != true)
             {

@@ -45,7 +45,7 @@
             <!-- Header Buttons -->
             <Button Grid.Row="0" Content="Start" Name="ToggleButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="ToggleButton_Click"/>
             <Rectangle Grid.Row="1" Fill="#15001F"/>
-            <Button Grid.Row="2" Content="Github" Name="GithubButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="GithubButton_Click"/>
+            <Button Grid.Row="2" Content="Website" Name="GithubButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="GithubButton_Click"/>
             <Button Grid.Row="3" Content="Settings" Name="SettingsButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="SettingsButton_Click"/>
         </Grid>
     </Grid>

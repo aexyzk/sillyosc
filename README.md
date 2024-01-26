@@ -7,7 +7,7 @@
 
 ## Things To Do
  - ~~Memory Status~~
- - GPU Status
+ - ~~GPU Status~~
  - ~~CPU Status~~
  - Add MPD Support
  - ~~Add Spotify Support~~

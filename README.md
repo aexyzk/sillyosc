@@ -1,9 +1,9 @@
 # Silly OSC
- ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/logo.png?raw=true)
+ ![program logo](https://github.com/aethefurry/sillyosc/blob/main/example/logo.png?raw=true)
 ### Currently being updated (Including Documentation lol), full release should be soon however for the time being you could use the old python version in the releases tab.
 
- ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/discord.png?raw=true)
- ![alt text](https://github.com/aethefurry/discord-vrchat-presence/blob/main/example/vrc.png?raw=true)
+ ![discord example](https://github.com/aethefurry/sillyosc/blob/main/example/discord.png?raw=true)
+ ![vrchat example](https://github.com/aethefurry/sillyosc/blob/main/example/vrc.png?raw=true)
 
 ## Things To Do
  - ~~Memory Status~~

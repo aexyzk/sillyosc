@@ -8,7 +8,6 @@ using SharpOSC;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using System.Text;
-using System.Windows.Media.TextFormatting;
 
 // Pls dont mind my spagetti code :3
 
@@ -19,13 +18,14 @@ namespace guitest
         bool Running = false;
         bool isSettingsOpen = false;
 
-        readonly string fileName = "config.silly";
+        static string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SillyOSC");
+        static string configFile = Path.Combine(appdata, "config.silly");
 
-        string clientID = "1164610063269384252";
+        string clientID = "";
         string oscAddress = "127.0.0.1";
         int oscPort = 9000;
 
-        int musicPlayerIndex = 1;
+        int musicPlayerIndex = 0;
         // 0 disabled
         // 1 spotify
         // 2 winamp
@@ -49,7 +49,7 @@ namespace guitest
 
         public MainWindow()
         {
-            //createOrFindConfigFile();
+            Directory.CreateDirectory(appdata); 
 
             try
             {
@@ -61,6 +61,8 @@ namespace guitest
             }
 
             InitializeComponent();
+
+            loadSettings();
         }
 
         private void GithubButton_Click(object sender, RoutedEventArgs e)
@@ -167,8 +169,7 @@ namespace guitest
                         }
                         else
                         {
-                            error("Error: Couldn't create a connection to a Discord RPC client. (verify your clientID) Trying again...");
-                            InitDiscordRPC();
+                            error("Error: Couldn't create a connection to a Discord RPC client. verify your clientID then try again");
                         }
                     }
                     catch (Exception e)
@@ -424,70 +425,65 @@ namespace guitest
             }
             else
             {
-                error("Couldn't destroy Discord RPC Client Connection, as it doesn't exist.");
+                warn("Couldn't destroy Discord RPC Client Connection, as it doesn't exist.");
             }
         }
 
         public void saveSettings()
         {
+            if (Disabled_Toggle.IsChecked == true)
+            {
+                musicPlayerIndex = 0;
+            }
+            else if (Spotify_Toggle.IsChecked == true)
+            {
+                musicPlayerIndex = 1;
+            }
+            else if (Winamp_Toggle.IsChecked == true)
+            {
+                musicPlayerIndex = 2;
+            }
+            else if (MPD_Toggle.IsChecked == true)
+            {
+                musicPlayerIndex = 3;
+            }
+
+            clientID = DiscordRPC_ID.Text;
+            if (client != null)
+            {
+                Deinitialize();
+            }
+            
+            oscAddress = OSCaddressTEXTBOX.Text;
+
             try
             {
-                if (Disabled_Toggle.IsChecked == true)
-                {
-                    musicPlayerIndex = 0;
-                }
-                else if (Spotify_Toggle.IsChecked == true)
-                {
-                    musicPlayerIndex = 1;
-                }
-                else if (Winamp_Toggle.IsChecked == true)
-                {
-                    musicPlayerIndex = 2;
-                }
-                else if (MPD_Toggle.IsChecked == true)
-                {
-                    musicPlayerIndex = 3;
-                }
-
-                clientID = DiscordRPC_ID.Text;
-                if (client != null)
-                {
-                    Deinitialize();
-                }
-                
-                oscAddress = OSCaddressTEXTBOX.Text;
-
-                try
-                {
-                    oscPort = Int32.Parse(OSCportTEXTBOX.Text);
-                }
-                catch (Exception e)
-                {
-                    warn($"port should be an int: {e.Message}");
-                }
-
-                twentyFourHourTime = (bool)TwentyFourHourTime_Toggle.IsChecked;
-                scrollMusic = (bool)ScrollMusic_Toggle.IsChecked;
-
-                using (FileStream fs = File.Create(fileName))
-                {
-                    string defaultConfig = $"{musicPlayerIndex}\n{clientID}\n{oscAddress}\n{oscPort}\n{twentyFourHourTime}\n{scrollMusic}";
-                    Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
-                    fs.Write(configFileBytes);
-                }
+                oscPort = Int32.Parse(OSCportTEXTBOX.Text);
             }
             catch (Exception e)
             {
-                error(e.Message);
+                warn($"port should be an int: {e.Message}");
+            }
+
+            twentyFourHourTime = (bool)TwentyFourHourTime_Toggle.IsChecked;
+            scrollMusic = (bool)ScrollMusic_Toggle.IsChecked;
+
+            using (FileStream fs = File.Create(configFile))
+            {
+                string defaultConfig = $"{musicPlayerIndex}\n{clientID}\n{oscAddress}\n{oscPort}\n{twentyFourHourTime}\n{scrollMusic}";
+                Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
+                fs.Write(configFileBytes);
             }
         }
 
         public void loadSettings()
         {
-            if (File.Exists(fileName))
+            if (File.Exists(configFile))
             {
-                string[] options = File.ReadAllLines(fileName);
-                if (options.Length >= 6){
+                string[] options = File.ReadAllLines(configFile);
+
+                if (options.Length >= 5)
+                {
                     musicPlayerIndex = Int32.Parse(options[0]);
                     if (options[1] == "")
                     {
@@ -497,21 +493,62 @@ namespace guitest
                     {
                         clientID = options[1];
                     }
+                    oscAddress = options[2];
+                    oscPort = Int32.Parse(options[3]);
+                    twentyFourHourTime = bool.Parse(options[4]);
+                    scrollMusic = bool.Parse(options[5]);
+
+                    displaySettingsInMenu();
+                }
+                else
+                {
+                    error("Config not setup correctly");
                 }
             }
             else
             {
-                using (FileStream fs = File.Create(fileName))
+                try
                 {
-                    string defaultConfig = $"0\n\nlocalhost\n6600\nTrue\nFalse";
+                    using (FileStream fs = File.Create(configFile))
+                    {
+                        string defaultConfig = $"0\n\n127.0.0.1\n9000\nTrue\nFalse";
+                        Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
+                        fs.Write(configFileBytes, 0, configFileBytes.Length);
+                    }
                     loadSettings();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
             }
         }
 
-        public void createDefaultConfig()
+        public void displaySettingsInMenu()
         {
+            if (musicPlayerIndex == 0) {
+                Disabled_Toggle.IsChecked = true;
+            }
+            else if (musicPlayerIndex == 1)
+            {
+                Spotify_Toggle.IsChecked = true;
+            }
+            else if (musicPlayerIndex == 2)
+            {
+                Winamp_Toggle.IsChecked = true;
+            }
+            else if (musicPlayerIndex == 3)
+            {
+                MPD_Toggle.IsChecked = true;
+            }
 
+            DiscordRPC_ID.Text = clientID;
+
+            OSCaddressTEXTBOX.Text = oscAddress;
+            OSCportTEXTBOX.Text = oscPort.ToString();
+
+            TwentyFourHourTime_Toggle.IsChecked = twentyFourHourTime;
+            ScrollMusic_Toggle.IsChecked = scrollMusic;
         }
 
         public void error(string message)

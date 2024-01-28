@@ -70,7 +70,7 @@
                         <Grid Grid.Row="1">
                             <DockPanel LastChildFill="True">
                                 <Label Content="Discord RPC: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
-                                <TextBox AcceptsTab="False" AcceptsReturn="False" MaxLength="19" FontSize="18" MaxHeight="26" Name="DiscordRPC_ID"/>
+                                <TextBox AcceptsTab="False" AcceptsReturn="False" MaxLength="19" FontSize="18" MaxHeight="26" Name="DiscordRPC_ID" Text=""/>
                             </DockPanel>
                         </Grid>
 

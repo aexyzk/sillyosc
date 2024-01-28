@@ -14,10 +14,11 @@
  - ~~Add Winamp Support~~
  - ~~Add the settings Menu~~
  - ~~Try to fix the button highlights~~
- - Save settings
+ - ~~Save settings~~
  - ~~Make Errors show up at the bottom of the program~~
  - ~~Discord RPC~~
  - ~~VRChat OSC~~
  - ~~Local Time~~
  - ~~GUI~~
  - ~~Make a web page for this~~
+ - Create installer and portable versions

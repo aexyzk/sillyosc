@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sillyosc", "sillyosc\sillyosc.csproj", "{B7126C8B-CBE9-4F3E-A9A9-CAB10FF0A6D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sillyosc", "sillyosc\sillyosc.csproj", "{B7126C8B-CBE9-4F3E-A9A9-CAB10FF0A6D2}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SillyOSC Setup", "SillyOSC Setup\SillyOSC Setup.vdproj", "{BE0CB205-981A-435B-B3CB-510D708A67B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,8 @@ Global
 		{B7126C8B-CBE9-4F3E-A9A9-CAB10FF0A6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7126C8B-CBE9-4F3E-A9A9-CAB10FF0A6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7126C8B-CBE9-4F3E-A9A9-CAB10FF0A6D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE0CB205-981A-435B-B3CB-510D708A67B2}.Debug|Any CPU.ActiveCfg = Debug
+		{BE0CB205-981A-435B-B3CB-510D708A67B2}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

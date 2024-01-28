@@ -5,48 +5,135 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:guitest"
         mc:Ignorable="d"
-        Title="OSC/RPC" Height="625" Width="800">
+        Title="OSC/RPC" Height="625" Width="800"
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen"
+        >
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="64"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+        <Border Background="#383C3D"/>
 
-        <Grid Grid.Column="1">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="65"/>
                 <RowDefinition/>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="26"/>
             </Grid.RowDefinitions>
-            <!-- Header -->
-            <Rectangle Fill="#170021" Grid.Row="0"/>
-            <TextBlock Text="VRChat OSC/Discord RPC Status" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
 
-            <!-- Content -->
-            <Rectangle Fill="#27003B" Grid.Row="1"/>
-            <Rectangle Fill="#33004D" Grid.Row="1" Margin="20 60 20 20"/>
-            <TextBlock Text="Not Running." Name="Status" Grid.Row="1" FontSize="32" Foreground="White" Margin="20 8 0 0"/>
-            <TextBlock Text="" Name="OutputBox" Margin="22 62 22 22" Grid.Row="1" FontSize="32" TextWrapping="Wrap" Foreground="White"/>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="64"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Footer -->
-            <Rectangle Fill="#15001F" Grid.Row="2" Name="ErrorBox"/> 
-            <!-- CF1B45 -->
-            <TextBlock Text="" FontSize="17" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Foreground="White" Name="ErrorMsg"/>
-        </Grid>
+                <Grid Grid.Column="1" Name="MainMenu" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="65"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <!-- Header -->
+                    <Border Background="#2A2D2E" Grid.Row="0"/>
+                    <TextBlock Text="VRChat OSC/Discord RPC Status" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="64"/>
-                <RowDefinition/>
-                <RowDefinition Height="64"/>
-                <RowDefinition Height="64"/>
-            </Grid.RowDefinitions>
-            
-            <!-- Header Buttons -->
-            <Button Grid.Row="0" Content="Start" Name="ToggleButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="ToggleButton_Click"/>
-            <Rectangle Grid.Row="1" Fill="#15001F"/>
-            <Button Grid.Row="2" Content="Website" Name="GithubButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="GithubButton_Click"/>
-            <Button Grid.Row="3" Content="Settings" Name="SettingsButton" FontSize="16" Foreground="White" Background="#8500C7" BorderBrush="#69009E" Click="SettingsButton_Click"/>
+                    <!-- Content -->
+                    <Border Background="#4D5254" Grid.Row="1" Margin="20 60 20 20" CornerRadius="10"/>
+                    <TextBlock Text="Not Running." Name="Status" Grid.Row="1" FontSize="32" Foreground="White" Margin="20 8 0 0"/>
+                    <TextBlock Text="" Name="OutputBox" Margin="30 70 30 30" Grid.Row="1" FontSize="32" TextWrapping="Wrap" Foreground="White"/>
+                </Grid>
+
+                <Grid Grid.Column="1" Name="SettingsMenu" Visibility="Hidden">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="65"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- erm -->
+                    <Grid Grid.Row="1" Margin="20 20 20 20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" VerticalAlignment="Top">
+                            <DockPanel LastChildFill="False">
+                                <Label Content="Media Player: " Foreground="White" FontSize="18"/>
+                                <RadioButton Content="Disabled" Margin="8" Foreground="White" FontSize="14" Name="Disabled_Toggle"/>
+                                <RadioButton Content="Spotify" Margin="8" Foreground="White" FontSize="14" Name="Spotify_Toggle"/>
+                                <RadioButton Content="Winamp" Margin="8" Foreground="White" FontSize="14" Name="Winamp_Toggle"/>
+                                <RadioButton Content="MPD" Margin="8" Foreground="White" FontSize="14" Name="MPD_Toggle"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1">
+                            <DockPanel LastChildFill="True">
+                                <Label Content="Discord RPC: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBox AcceptsTab="False" AcceptsReturn="False" MaxLength="19" FontSize="18" MaxHeight="26" Name="DiscordRPC_ID"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <DockPanel LastChildFill="True" Grid.Column="0">
+                                <Label Content="OSC Address: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBox AcceptsTab="False" AcceptsReturn="False" MaxLength="19" FontSize="18" MaxHeight="26" Name="OSCaddressTEXTBOX"/>
+                            </DockPanel>
+
+                            <DockPanel LastChildFill="True" Grid.Column="1">
+                                <Label Content="OSC Port: " Foreground="White" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBox AcceptsTab="False" AcceptsReturn="False" MaxLength="19" FontSize="18" MaxHeight="26" Name="OSCportTEXTBOX"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="3">
+                            <DockPanel LastChildFill="True">
+                                <ToggleButton Content="24 Hour Time" Name="TwentyFourHourTime_Toggle"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="4">
+                            <DockPanel LastChildFill="True">
+                                <ToggleButton Content="Scroll Music Title" Name="ScrollMusic_Toggle"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="5">
+                            <Button Name="SaveButton" Content="Save!" Height="23" Width="50" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="SaveButton_Click"/>
+                        </Grid>
+                    </Grid>
+
+                    <!-- Header -->
+                    <Border Background="#2A2D2E" Grid.Row="0"/>
+                    <TextBlock Text="Settings" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                </Grid>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="64"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="64"/>
+                        <RowDefinition Height="64"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Buttons -->
+                    <Button Grid.Row="0" Content="Start" Name="ToggleButton" FontSize="16" Click="ToggleButton_Click"/>
+                    <Rectangle Grid.Row="1" Fill="#212324"/>
+                    <Button Grid.Row="2" Content="Website" Name="GithubButton" FontSize="16" Click="GithubButton_Click"/>
+                    <Button Grid.Row="3" Content="Settings" Name="SettingsButton" FontSize="16" Click="SettingsButton_Click"/>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <!-- Footer -->
+                <Border Background="#212324" Grid.Row="2" Name="ErrorBox"/>
+                <TextBlock Text="" FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Foreground="White" Name="ErrorMsg" Margin="2,0,0,2"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

@@ -55,5 +55,3 @@ C:\Users\ae\Desktop\discord-vrchat-presence-main\sillyosc\sillyosc\obj\Debug\net
 C:\Users\ae\Desktop\discord-vrchat-presence-main\sillyosc\sillyosc\obj\Debug\net6.0-windows\sillyosc.pdb
 C:\Users\ae\Desktop\discord-vrchat-presence-main\sillyosc\sillyosc\obj\Debug\net6.0-windows\sillyosc.genruntimeconfig.cache
 C:\Users\ae\Desktop\discord-vrchat-presence-main\sillyosc\sillyosc\obj\Debug\net6.0-windows\ref\sillyosc.dll
-C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\obj\Debug\net6.0-windows\Settings.g.cs
-C:\Users\ae\Documents\GitHub\discord-vrchat-presence\sillyosc\sillyosc\obj\Debug\net6.0-windows\Settings.baml

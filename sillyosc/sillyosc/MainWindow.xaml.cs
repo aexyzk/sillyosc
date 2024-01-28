@@ -8,6 +8,7 @@ using SharpOSC;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using System.Text;
+using System.Windows.Media.TextFormatting;
 
 // Pls dont mind my spagetti code :3
 
@@ -16,10 +17,10 @@ namespace guitest
     public partial class MainWindow : System.Windows.Window
     {
         bool Running = false;
+        bool isSettingsOpen = false;
 
         readonly string fileName = "config.silly";
 
-        //Vars set by config.ini
         string clientID = "1164610063269384252";
         string oscAddress = "127.0.0.1";
         int oscPort = 9000;
@@ -34,7 +35,6 @@ namespace guitest
         int maxScrollLength = 20;
         int scrollAmountPerFrame = 2;
         bool twentyFourHourTime = true;
-        //End
 
         bool paused = false;
         string lastSong = "";
@@ -93,15 +93,22 @@ namespace guitest
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (!isSettingsOpen)
             {
-                sillyosc.Settings settingsMenuInst = new sillyosc.Settings();
-                settingsMenuInst.Show();
+                MainMenu.Visibility = Visibility.Hidden;
+                SettingsMenu.Visibility = Visibility.Visible;
+                SettingsButton.Content = "Back";
+                ToggleButton.IsEnabled = false;
             }
-            catch
+            else
             {
-                error("Couldn't open settings menu!");
+                MainMenu.Visibility = Visibility.Visible;
+                SettingsMenu.Visibility = Visibility.Hidden;
+                SettingsButton.Content = "Settings";
+                ToggleButton.IsEnabled = true;
             }
+
+            isSettingsOpen = !isSettingsOpen;
         }
 
         public void RunOSC()
@@ -182,12 +189,12 @@ namespace guitest
             }
         }
 
-         string SendMessageOSC(string msg)
+        string SendMessageOSC(string msg)
         {
             var message = new SharpOSC.OscMessage("/chatbox/input", msg, true);
             var sender = new SharpOSC.UDPSender(oscAddress, oscPort);
             sender.Send(message);
-            return ($"'{msg}'");
+            return ($"{msg}");
         }
 
         void InitDiscordRPC()
@@ -218,7 +225,7 @@ namespace guitest
             }
         }
 
-         string GetTime()
+        string GetTime()
         {
             DateTime currentTime = DateTime.Now;
             if (twentyFourHourTime)
@@ -231,7 +238,7 @@ namespace guitest
             }
         }
 
-        public  string GetMusic()
+        public string GetMusic()
         {
             if (musicPlayerIndex == 1) // Spotify
             {
@@ -288,6 +295,10 @@ namespace guitest
                     return "Winamp isn't detected!";
                 }
             }
+            else if (musicPlayerIndex == 3) // MPD
+            {
+                return "MPD not set up yet";
+            }
             else
             {
                 return "None";
@@ -300,7 +311,7 @@ namespace guitest
             return $"CPU: {getCPUusage()}% GPU: {getGPUusage()}% RAM: {Math.Round(getUsedRAM() * 10) / 10:F1}/{Math.Round(getTotalRAM()):F1} GB";
         }
 
-         public double getUsedRAM()
+        public double getUsedRAM()
         {
             if (ramCounter != null)
             {
@@ -417,41 +428,107 @@ namespace guitest
             }
         }
 
-        public  void createOrFindConfigFile()
+        public void saveSettings()
         {
-            if (File.Exists(fileName))
+            try
             {
-                warn("Config already exists");
-            }
-            else
-            {
+                if (Disabled_Toggle.IsChecked == true)
+                {
+                    musicPlayerIndex = 0;
+                }
+                else if (Spotify_Toggle.IsChecked == true)
+                {
+                    musicPlayerIndex = 1;
+                }
+                else if (Winamp_Toggle.IsChecked == true)
+                {
+                    musicPlayerIndex = 2;
+                }
+                else if (MPD_Toggle.IsChecked == true)
+                {
+                    musicPlayerIndex = 3;
+                }
+
+                clientID = DiscordRPC_ID.Text;
+                if (client != null)
+                {
+                    Deinitialize();
+                }
+                
+                oscAddress = OSCaddressTEXTBOX.Text;
+
                 try
                 {
-                    warn("Can't find configuration file, creating a config file for you with defaults");
-                    using (FileStream fs = File.Create(fileName))
-                    {
-                        string defaultConfig = "clientID: '1164610063269384252' \n oscAddress: \n '127.0.0.1' \n oscPort: 9000 \n scrollMusic: false \n maxScrollLength: 20 \n scrollAmountPerFrame: 2 \n twentyFourHourTime: true \n musicPlayerIndex: 0 \n # 0 disabled \n # 1 spotify \n # 2 winamp \n # 3 mpd (not setup yet)";
-                        Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
-                        fs.Write(configFileBytes);
-                    }
+                    oscPort = Int32.Parse(OSCportTEXTBOX.Text);
                 }
                 catch (Exception e)
                 {
-                    error($"Couldn't create a configuration file: (please restart the program): {e.Message}");
+                    warn($"port should be an int: {e.Message}");
+                }
+
+                twentyFourHourTime = (bool)TwentyFourHourTime_Toggle.IsChecked;
+                scrollMusic = (bool)ScrollMusic_Toggle.IsChecked;
+
+                using (FileStream fs = File.Create(fileName))
+                {
+                    string defaultConfig = $"{musicPlayerIndex}\n{clientID}\n{oscAddress}\n{oscPort}\n{twentyFourHourTime}\n{scrollMusic}";
+                    Byte[] configFileBytes = new UTF8Encoding(true).GetBytes(defaultConfig);
+                    fs.Write(configFileBytes);
+                }
+            }
+            catch (Exception e)
+            {
+                error(e.Message);
+            }
+        }
+
+        public void loadSettings()
+        {
+            if (File.Exists(fileName))
+            {
+                string[] options = File.ReadAllLines(fileName);
+                if (options.Length >= 6){
+                    musicPlayerIndex = Int32.Parse(options[0]);
+                    if (options[1] == "")
+                    {
+                        error("Make sure you set Discord ID in the settings!");
+                    }
+                    else
+                    {
+                        clientID = options[1];
+                    }
+                }
+            }
+            else
+            {
+                using (FileStream fs = File.Create(fileName))
+                {
+                    string defaultConfig = $"0\n\nlocalhost\n6600\nTrue\nFalse";
+                    loadSettings();
                 }
             }
         }
 
+        public void createDefaultConfig()
+        {
+
+        }
+
         public void error(string message)
         {
-            ErrorBox.Fill = new SolidColorBrush(Colors.Red);
+            ErrorBox.Background = new SolidColorBrush(Colors.Red);
             ErrorMsg.Text = $"Error: {message}";
         }
 
         public void warn(string message)
         {
-            ErrorBox.Fill = new SolidColorBrush(Colors.Orange);
+            ErrorBox.Background = new SolidColorBrush(Colors.Orange);
             ErrorMsg.Text = $"Warning: {message}";
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            saveSettings();
         }
     }
 }

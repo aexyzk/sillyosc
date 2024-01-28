@@ -12,10 +12,9 @@
  - Add MPD Support
  - ~~Add Spotify Support~~
  - ~~Add Winamp Support~~
- - Add the settings Menu
- - Try to fix the button highlights
+ - ~~Add the settings Menu~~
+ - ~~Try to fix the button highlights~~
  - Save settings
- - Get some nice little SVGs for the icons (Start, Stop, Github, Settings)
  - ~~Make Errors show up at the bottom of the program~~
  - ~~Discord RPC~~
  - ~~VRChat OSC~~

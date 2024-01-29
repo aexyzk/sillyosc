@@ -45,3 +45,4 @@ False        // Scroll Music toggle
  - ~~Make a web page for this~~
  - ~~Create installer and portable versions~~
  - Add MPD Support
+ - Add Browser Support
